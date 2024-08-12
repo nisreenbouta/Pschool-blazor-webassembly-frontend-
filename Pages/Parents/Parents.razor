@@ -1,0 +1,45 @@
+@page "/parents"
+@using PschoolClient.Services
+@inject ParentService ParentService
+
+<h3>Parents</h3>
+
+<button @onclick="AddParent">Add Parent</button>
+
+@if (parents != null)
+{
+    <ul>
+        @foreach (var parent in parents)
+        {
+            <li>@parent.FirstName @parent.LastName
+                <button @onclick="() => EditParent(parent.Id)">Edit</button>
+                <button @onclick="() => DeleteParent(parent.Id)">Delete</button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<ParentService.Parent> parents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        parents = await ParentService.GetParentsAsync();
+    }
+
+    private void AddParent()
+    {
+        // Logic for adding a new parent
+    }
+
+    private void EditParent(int id)
+    {
+        // Logic for editing a parent
+    }
+
+    private async void DeleteParent(int id)
+    {
+        await ParentService.DeleteParentAsync(id);
+        parents = await ParentService.GetParentsAsync();
+    }
+}

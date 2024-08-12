@@ -1,0 +1,70 @@
+@page "/students"
+@using PschoolClient.Services
+@inject StudentService StudentService
+@inject ParentService ParentService
+
+<h3>Students</h3>
+
+<select @onchange="FilterStudentsByParent">
+    <option value="0">All Parents</option>
+    @foreach (var parent in parents)
+    {
+        <option value="@parent.Id">@parent.FirstName @parent.LastName</option>
+    }
+</select>
+
+<button @onclick="AddStudent">Add Student</button>
+
+@if (students != null)
+{
+    <ul>
+        @foreach (var student in students)
+        {
+            <li>@student.FirstName @student.LastName
+                <button @onclick="() => EditStudent(student.Id)">Edit</button>
+                <button @onclick="() => DeleteStudent(student.Id)">Delete</button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<StudentService.Student> students;
+    private IEnumerable<ParentService.Parent> parents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        parents = await ParentService.GetParentsAsync();
+        students = await StudentService.GetStudentsAsync();
+    }
+
+    private async void FilterStudentsByParent(ChangeEventArgs e)
+    {
+        int parentId = int.Parse(e.Value.ToString());
+
+        if (parentId == 0)
+        {
+            students = await StudentService.GetStudentsAsync();
+        }
+        else
+        {
+            students = (await StudentService.GetStudentsAsync()).Where(s => s.ParentId == parentId);
+        }
+    }
+
+    private void AddStudent()
+    {
+        // Logic for adding a new student
+    }
+
+    private void EditStudent(int id)
+    {
+        // Logic for editing a student
+    }
+
+    private async void DeleteStudent(int id)
+    {
+        await StudentService.DeleteStudentAsync(id);
+        students = await StudentService.GetStudentsAsync();
+    }
+}
