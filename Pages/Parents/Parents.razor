@@ -4,39 +4,39 @@
 @inject ParentService ParentService
 
 <h3>Parents</h3>
-
-@if (parents == null)
-{
-    <p><em>Loading...</em></p>
-}
-else if (parents.Count == 0)
-{
-    <p>No parents available.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>User Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var parent in parents)
-            {
+<div class="container">
+    @if (parents == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (parents.Count == 0)
+    {
+        <p>No parents available.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@parent.UserName</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => EditParent(parent)">Edit</button>
-                        <button class="btn btn-danger" @onclick="() => DeleteParent(parent.Id)">Delete</button>
-                    </td>
+                    <th>User Name</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
-
+            </thead>
+            <tbody>
+                @foreach (var parent in parents)
+                {
+                    <tr>
+                        <td>@parent.UserName</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => EditParent(parent)">Edit</button>
+                            <button class="btn btn-danger" @onclick="() => DeleteParent(parent.Id)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 @code {
     private List<Parent> parents;
 

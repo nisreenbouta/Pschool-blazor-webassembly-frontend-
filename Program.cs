@@ -13,7 +13,9 @@ namespace PschoolClient
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("app");
+          
+            builder.RootComponents.Add<App>("#app");
+           
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5104/api/") });
             builder.Services.AddScoped<StudentService>();
@@ -23,3 +25,6 @@ namespace PschoolClient
         }
     }
 }
+
+
+
