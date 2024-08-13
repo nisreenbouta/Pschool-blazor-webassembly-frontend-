@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using PschoolClient.Models;
 
 namespace PschoolClient.Services
 {
@@ -14,43 +15,9 @@ namespace PschoolClient.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Parent>> GetParentsAsync()
+        public async Task<List<Parent>> GetParentsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<Parent>>("api/Parents");
-        }
-
-        public async Task<Parent> GetParentAsync(int id)
-        {
-            return await _httpClient.GetFromJsonAsync<Parent>($"api/Parents/{id}");
-        }
-
-        public async Task AddParentAsync(Parent parent)
-        {
-            await _httpClient.PostAsJsonAsync("api/Parents", parent);
-        }
-
-        public async Task UpdateParentAsync(Parent parent)
-        {
-            await _httpClient.PutAsJsonAsync($"api/Parents/{parent.Id}", parent);
-        }
-
-        public async Task DeleteParentAsync(int id)
-        {
-            await _httpClient.DeleteAsync($"api/Parents/{id}");
-        }
-
-        public class Parent
-        {
-            public int Id { get; set; }
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-            public string UserName { get; set; }
-            public string Email { get; set; }
-            public string Phone { get; set; }
-            public string WorkPhone { get; set; }
-            public string HomePhone { get; set; }
-            public string HomeAddress { get; set; }
-            public bool IsActive { get; set; }
+            return await _httpClient.GetFromJsonAsync<List<Parent>>("parents");
         }
     }
 }

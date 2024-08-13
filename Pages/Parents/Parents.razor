@@ -1,45 +1,57 @@
 @page "/parents"
+@using PschoolClient.Models
 @using PschoolClient.Services
 @inject ParentService ParentService
 
 <h3>Parents</h3>
 
-<button @onclick="AddParent">Add Parent</button>
-
-@if (parents != null)
+@if (parents == null)
 {
-    <ul>
-        @foreach (var parent in parents)
-        {
-            <li>@parent.FirstName @parent.LastName
-                <button @onclick="() => EditParent(parent.Id)">Edit</button>
-                <button @onclick="() => DeleteParent(parent.Id)">Delete</button>
-            </li>
-        }
-    </ul>
+    <p><em>Loading...</em></p>
+}
+else if (parents.Count == 0)
+{
+    <p>No parents available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var parent in parents)
+            {
+                <tr>
+                    <td>@parent.UserName</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditParent(parent)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteParent(parent.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {
-    private IEnumerable<ParentService.Parent> parents;
+    private List<Parent> parents;
 
     protected override async Task OnInitializedAsync()
     {
         parents = await ParentService.GetParentsAsync();
     }
 
-    private void AddParent()
+    private async Task EditParent(Parent parent)
     {
-        // Logic for adding a new parent
+        // Code for editing parent
     }
 
-    private void EditParent(int id)
+    private async Task DeleteParent(int id)
     {
-        // Logic for editing a parent
-    }
-
-    private async void DeleteParent(int id)
-    {
-        await ParentService.DeleteParentAsync(id);
-        parents = await ParentService.GetParentsAsync();
+        // Code for deleting parent
     }
 }

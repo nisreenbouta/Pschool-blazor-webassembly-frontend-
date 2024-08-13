@@ -1,70 +1,94 @@
 @page "/students"
+@using PschoolClient.Models
 @using PschoolClient.Services
 @inject StudentService StudentService
 @inject ParentService ParentService
 
 <h3>Students</h3>
 
-<select @onchange="FilterStudentsByParent">
-    <option value="0">All Parents</option>
-    @foreach (var parent in parents)
-    {
-        <option value="@parent.Id">@parent.FirstName @parent.LastName</option>
-    }
-</select>
-
-<button @onclick="AddStudent">Add Student</button>
-
-@if (students != null)
-{
-    <ul>
-        @foreach (var student in students)
+<div class="mb-3">
+    <label for="parentFilter" class="form-label">Filter by Parent</label>
+    <select id="parentFilter" class="form-select" @onchange="FilterStudentsByParent">
+        <option value="">All Parents</option>
+        @foreach (var parent in parents)
         {
-            <li>@student.FirstName @student.LastName
-                <button @onclick="() => EditStudent(student.Id)">Edit</button>
-                <button @onclick="() => DeleteStudent(student.Id)">Delete</button>
-            </li>
+            <option value="@parent.Id">@parent.UserName</option>
         }
-    </ul>
+    </select>
+</div>
+
+@if (filteredStudents == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (filteredStudents.Count == 0)
+{
+    <p>No students available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Gender</th>
+                <th>Grade</th>
+                <th>Parent</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in filteredStudents)
+            {
+                <tr>
+                    <td>@student.FirstName</td>
+                    <td>@student.LastName</td>
+                    <td>@student.Gender</td>
+                    <td>@student.grade</td>
+                    <td>@student.ParentId</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditStudent(student)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteStudent(student.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {
-    private IEnumerable<StudentService.Student> students;
-    private IEnumerable<ParentService.Parent> parents;
+    private List<Student> students;
+    private List<Student> filteredStudents;
+    private List<Parent> parents;
 
     protected override async Task OnInitializedAsync()
     {
-        parents = await ParentService.GetParentsAsync();
         students = await StudentService.GetStudentsAsync();
+        parents = await ParentService.GetParentsAsync();
+        filteredStudents = students; // Show all students initially
     }
 
-    private async void FilterStudentsByParent(ChangeEventArgs e)
+    private void FilterStudentsByParent(ChangeEventArgs e)
     {
-        int parentId = int.Parse(e.Value.ToString());
-
-        if (parentId == 0)
+        var selectedParentId = e.Value?.ToString();
+        if (string.IsNullOrEmpty(selectedParentId))
         {
-            students = await StudentService.GetStudentsAsync();
+            filteredStudents = students; // Show all students if no parent is selected
         }
         else
         {
-            students = (await StudentService.GetStudentsAsync()).Where(s => s.ParentId == parentId);
+            filteredStudents = students.Where(s => s.ParentId == int.Parse(selectedParentId)).ToList();
         }
     }
 
-    private void AddStudent()
+    private async Task EditStudent(Student student)
     {
-        // Logic for adding a new student
+        // Code for editing student
     }
 
-    private void EditStudent(int id)
+    private async Task DeleteStudent(int id)
     {
-        // Logic for editing a student
-    }
-
-    private async void DeleteStudent(int id)
-    {
-        await StudentService.DeleteStudentAsync(id);
-        students = await StudentService.GetStudentsAsync();
+        // Code for deleting student
     }
 }
