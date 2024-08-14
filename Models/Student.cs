@@ -10,7 +10,7 @@ namespace PschoolClient.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
          public int ParentId { get; set; }
-        // public Parent Parent { get; set; } 
+        
         public bool IsActive { get; set; }= true;
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }

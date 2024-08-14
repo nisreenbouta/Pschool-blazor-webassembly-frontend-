@@ -46,7 +46,7 @@
                         <td>@student.LastName</td>
                         <td>@student.Gender</td>
                         <td>@student.grade</td>
-                        <td>@student.ParentId</td>
+                        <td>@GetParentName(student.ParentId)</td>
                         <td>
                             <button class="btn btn-primary" @onclick="() => EditStudent(student)">Edit</button>
                             <button class="btn btn-danger" @onclick="() => DeleteStudent(student.Id)">Delete</button>
@@ -92,5 +92,10 @@
     private async Task DeleteStudent(int id)
     {
         // Code for deleting student
+    }
+    private string GetParentName(int parentId)
+    {
+        var parent = parents.FirstOrDefault(p => p.Id == parentId);
+        return parent != null ? parent.UserName : "Unknown";
     }
 }

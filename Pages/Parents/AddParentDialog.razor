@@ -1,0 +1,85 @@
+@using PschoolClient.Models
+@using PschoolClient.Services
+@inject ParentService ParentService
+@code {
+    private bool showDialog = false;
+
+    private Parent newParent = new Parent();
+
+    [Parameter]
+    public EventCallback OnParentAdded { get; set; }
+
+    public void Show()
+    {
+        showDialog = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        showDialog = false;
+        // Clear the inputs
+        newParent = new Parent();
+    }
+
+    private async Task SaveParent()
+    {
+        await ParentService.AddParent(newParent);
+        await OnParentAdded.InvokeAsync();
+        Close();
+    }
+}
+
+@if (showDialog)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Parent</h5>
+                    <button type="button" class="btn-close" @onclick="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@newParent">
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <InputText class="form-control" @bind-Value="newParent.FirstName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <InputText class="form-control" @bind-Value="newParent.LastName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">User Name</label>
+                            <InputText class="form-control" @bind-Value="newParent.UserName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <InputText class="form-control" @bind-Value="newParent.Email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <InputText class="form-control" @bind-Value="newParent.Phone" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Work Phone</label>
+                            <InputText class="form-control" @bind-Value="newParent.WorkPhone" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Home Phone</label>
+                            <InputText class="form-control" @bind-Value="newParent.HomePhone" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Home Address</label>
+                            <InputText class="form-control" @bind-Value="newParent.HomeAddress" />
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="Close">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveParent">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

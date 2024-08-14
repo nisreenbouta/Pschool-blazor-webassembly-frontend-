@@ -3,7 +3,7 @@
 @using PschoolClient.Services
 @inject ParentService ParentService
 
-<h3>Parents</h3>
+
 <div class="container">
     @if (parents == null)
     {
@@ -15,18 +15,42 @@
     }
     else
     {
+       <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Parents</h3>
+           
+                @* <input type="text" class="form-control me-2" placeholder="Search..." @oninput="SearchParents" /> *@
+                
+            
+            <button class="btn btn-primary" @onclick="OpenAddParentDialog">Add Parent</button>
+        </div>
+        <AddParentDialog @ref="addParentDialog" OnParentAdded="LoadParents" />
+
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>User Name</th>
-                    <th>Actions</th>
+                    <th style="width: 150px;">First Name</th>
+                    <th style="width: 150px;">Last Name</th>
+                    <th style="width: 150px;">User Name</th>
+                    <th style="width: 150px;">Email</th>
+                    <th style="width: 150px;">Home Address</th>
+                    <th style="width: 150px;">Phone 1</th>
+                    <th style="width: 150px;">Home Phone</th>
+                    <th style="width: 150px;">Work Phone</th>
+                    <th style="width: 150px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var parent in parents)
                 {
                     <tr>
+                        <td>@parent.FirstName</td>
+                        <td>@parent.LastName</td>
                         <td>@parent.UserName</td>
+                        <td>@parent.Email</td>
+                        <td>@parent.HomeAddress</td>
+                        <td>@parent.Phone</td>
+                        <td>@parent.HomePhone</td>
+                        <td>@parent.WorkPhone</td>
                         <td>
                             <button class="btn btn-primary" @onclick="() => EditParent(parent)">Edit</button>
                             <button class="btn btn-danger" @onclick="() => DeleteParent(parent.Id)">Delete</button>
@@ -39,12 +63,35 @@
 </div>
 @code {
     private List<Parent> parents;
-
+    private List<Parent> filteredParents;
     protected override async Task OnInitializedAsync()
     {
         parents = await ParentService.GetParentsAsync();
+        await LoadParents();
+        
     }
 
+    private void SearchParents(ChangeEventArgs e)
+    {
+        var searchText = e.Value?.ToString()?.ToLower();
+        if (string.IsNullOrEmpty(searchText))
+        {
+            filteredParents = parents; // Show all parents if search is empty
+        }
+        else
+        {
+            filteredParents = parents.Where(p => 
+                p.FirstName.ToLower().Contains(searchText)|| 
+                p.LastName.ToLower().Contains(searchText) ||
+                p.UserName.ToLower().Contains(searchText) ||
+                p.Email.ToLower().Contains(searchText)    ||
+                p.HomeAddress.ToLower().Contains(searchText) ||
+                p.Phone.ToLower().Contains(searchText)      ||
+                p.HomePhone.ToLower().Contains(searchText) ||
+                p.WorkPhone.ToLower().Contains(searchText)
+            ).ToList();
+        }
+    }
     private async Task EditParent(Parent parent)
     {
         // Code for editing parent
@@ -54,4 +101,18 @@
     {
         // Code for deleting parent
     }
+
+    private AddParentDialog addParentDialog;
+
+    private async Task OpenAddParentDialog()
+    {
+        addParentDialog.Show();
+    }
+
+    private async Task LoadParents()
+    {
+        parents = await ParentService.GetParentsAsync();
+        filteredParents = new List<Parent>(parents); 
+    }
+
 }

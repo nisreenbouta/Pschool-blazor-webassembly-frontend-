@@ -19,5 +19,12 @@ namespace PschoolClient.Services
         {
             return await _httpClient.GetFromJsonAsync<List<Parent>>("parents");
         }
+
+        public async Task AddParent(Parent parent)
+        {
+            var response = await _httpClient.PostAsJsonAsync("parents", parent);
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }
