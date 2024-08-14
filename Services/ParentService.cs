@@ -26,5 +26,12 @@ namespace PschoolClient.Services
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task DeleteParent(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"parents/{id}");
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }
+

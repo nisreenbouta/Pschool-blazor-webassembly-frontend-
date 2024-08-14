@@ -40,7 +40,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var parent in parents)
+                @foreach (var parent in filteredParents)
                 {
                     <tr>
                         <td>@parent.FirstName</td>
@@ -99,7 +99,9 @@
 
     private async Task DeleteParent(int id)
     {
-        // Code for deleting parent
+        await ParentService.DeleteParent(id);
+        await LoadParents();
+       
     }
 
     private AddParentDialog addParentDialog;
