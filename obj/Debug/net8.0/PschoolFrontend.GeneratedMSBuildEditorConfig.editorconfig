@@ -34,8 +34,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFyZW50c1xBZGRQYXJlbnREaWFsb2cucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/Nisreen/Desktop/PschoolFrontend/Pages/Parents/EditParentDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFyZW50c1xFZGl0UGFyZW50RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/Nisreen/Desktop/PschoolFrontend/Pages/Parents/Parents.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGFyZW50c1xQYXJlbnRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Nisreen/Desktop/PschoolFrontend/Pages/Students/AddStudentDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudHNcQWRkU3R1ZGVudERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/Nisreen/Desktop/PschoolFrontend/Pages/Students/EditStudentDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudHNcRWRpdFN0dWRlbnREaWFsb2cucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/Nisreen/Desktop/PschoolFrontend/Pages/Students/Students.razor]

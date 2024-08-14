@@ -1,10 +1,11 @@
 @page "/students"
 @using PschoolClient.Models
 @using PschoolClient.Services
+@using Microsoft.JSInterop
 @inject StudentService StudentService
 @inject ParentService ParentService
+@inject IJSRuntime JS
 
-<h3>Students</h3>
 <div class="container">
     <div class="mb-3">
         <label for="parentFilter" class="form-label">Filter by Parent</label>
@@ -27,6 +28,12 @@
     }
     else
     {
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Students</h3>
+            <button class="btn btn-primary" @onclick="OpenAddStudentDialog">Add Student</button>
+             <AddStudentDialog @ref="addStudentDialog" OnStudentAdded="LoadStudents" />
+             <EditStudentDialog @ref="editStudentDialog" OnStudentEdited="LoadStudents" />
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -63,12 +70,17 @@
     private List<Student> students;
     private List<Student> filteredStudents;
     private List<Parent> parents;
+    private Student selectedStudent;
+
+    private EditStudentDialog editStudentDialog;
+    private AddStudentDialog addStudentDialog;
 
     protected override async Task OnInitializedAsync()
     {
         students = await StudentService.GetStudentsAsync();
         parents = await ParentService.GetParentsAsync();
         filteredStudents = students; // Show all students initially
+        await LoadStudents();
     }
 
     private void FilterStudentsByParent(ChangeEventArgs e)
@@ -86,16 +98,29 @@
 
     private async Task EditStudent(Student student)
     {
-        // Code for editing student
+        selectedStudent = student;
+        editStudentDialog.Show(selectedStudent);
+        await JS.InvokeVoidAsync("$('#editStudentModal').modal", "show");
     }
 
     private async Task DeleteStudent(int id)
     {
-        // Code for deleting student
+         await StudentService.DeleteStudent(id);
+        await LoadStudents();
     }
     private string GetParentName(int parentId)
     {
         var parent = parents.FirstOrDefault(p => p.Id == parentId);
         return parent != null ? parent.UserName : "Unknown";
+    }
+    private async Task OpenAddStudentDialog()
+    {
+        addStudentDialog.Show();
+    }
+
+    private async Task LoadStudents()
+    {
+        students = await StudentService.GetStudentsAsync();
+        filteredStudents = new List<Student>(students);
     }
 }

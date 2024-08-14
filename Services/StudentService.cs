@@ -19,5 +19,23 @@ namespace PschoolClient.Services
         {
             return await _httpClient.GetFromJsonAsync<List<Student>>("students");
         }
+        
+        public async Task AddStudent(Student student)
+        {
+            var response = await _httpClient.PostAsJsonAsync("students", student);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task DeleteStudent(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"students/{id}");
+            response.EnsureSuccessStatusCode();
+        }
+       public async Task UpdateStudent(Student student)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"students/{student.Id}", student);
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }

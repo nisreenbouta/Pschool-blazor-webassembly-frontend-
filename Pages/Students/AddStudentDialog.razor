@@ -1,0 +1,96 @@
+@using PschoolClient.Models
+@using PschoolClient.Services
+@inject ParentService ParentService
+@inject StudentService StudentService
+
+@code {
+    private bool showDialog = false;
+
+    private Student newStudent = new Student();
+    private List<Parent> parents = new List<Parent>();
+
+    [Parameter]
+    public EventCallback OnStudentAdded { get; set; }
+
+    public void Show()
+    {
+        showDialog = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        showDialog = false;
+        // Clear the inputs
+        newStudent = new Student();
+    }
+
+    private async Task SaveStudent()
+    {
+        newStudent.DateOfBirth = DateTime.SpecifyKind(newStudent.DateOfBirth, DateTimeKind.Utc);
+        await StudentService.AddStudent(newStudent);
+        await OnStudentAdded.InvokeAsync();
+        Close();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        parents = await ParentService.GetParentsAsync();
+    }
+}
+
+@if (showDialog)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Student</h5>
+                    <button type="button" class="btn-close" @onclick="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@newStudent">
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <InputText class="form-control" @bind-Value="newStudent.FirstName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <InputText class="form-control" @bind-Value="newStudent.LastName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">User Name</label>
+                            <InputText class="form-control" @bind-Value="newStudent.UserName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Parent</label>
+                            <select class="form-select" @bind="newStudent.ParentId">
+                                <option value="">Select Parent</option>
+                                @foreach (var parent in parents)
+                                {
+                                    <option value="@parent.Id">@parent.UserName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date Of Birth</label>
+                            <InputDate class="form-control" @bind-Value="newStudent.DateOfBirth" TValue="DateTime" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Gender</label>
+                            <InputText class="form-control" @bind-Value="newStudent.Gender" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Grade</label>
+                            <InputText class="form-control" @bind-Value="newStudent.grade" />
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="Close">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveStudent">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

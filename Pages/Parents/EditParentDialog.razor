@@ -1,0 +1,86 @@
+@using PschoolClient.Models
+@using PschoolClient.Services
+@inject ParentService ParentService
+@code {
+    private bool showDialog = false;
+
+    private Parent parentToEdit = new Parent();
+
+    [Parameter]
+    public EventCallback OnParentEdited { get; set; }
+
+    public void Show(Parent parent)
+    {
+        parentToEdit = parent;
+        showDialog = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        showDialog = false;
+        // Clear the inputs
+        parentToEdit = new Parent();
+    }
+
+    private async Task SaveParent()
+    {
+        await ParentService.UpdateParent(parentToEdit);
+        await OnParentEdited.InvokeAsync();
+        Close();
+    }
+}
+
+@if (showDialog)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Parent</h5>
+                    <button type="button" class="btn-close" @onclick="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@parentToEdit">
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.FirstName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.LastName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">User Name</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.UserName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.Email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.Phone" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Work Phone</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.WorkPhone" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Home Phone</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.HomePhone" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Home Address</label>
+                            <InputText class="form-control" @bind-Value="parentToEdit.HomeAddress" />
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="Close">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveParent">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
